@@ -9,7 +9,6 @@
         public decimal l { get; set; }
         public decimal o { get; set; }
         public decimal pc { get; set; }
-        public string name { get; set; }
 
 
 
