@@ -17,16 +17,17 @@ namespace StockWebApi.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string searchString)
         {
+
+            string symbol = searchString;
+
             string symbol = "AAPL";
+
             //string symbol = searchString;
             var stock =await _stockService.GetStock(symbol);
             if (stock == null)
             {
                 // Null durumunda özel bir hata mesajı veya boş bir model döndürebilirsiniz
                 return View("Error"); // veya bir hata mesajı gösterebiliriz
-            }
 
-            return View(stock);
-        }
     }
 }

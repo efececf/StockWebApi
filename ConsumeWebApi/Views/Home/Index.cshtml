@@ -1,0 +1,11 @@
+﻿@{
+    ViewData["Title"] = "Welcome to your personal invester";
+}
+<div class="row">
+    <div class=" col-md-6">
+        <form class="d-flex" asp-action="SearchStock" asp-controller="Home" method="post">
+            <input type="search" name="searchString" placeholder="Enter the name of stock" aria-label="Search" />
+            <button class="btn btn-dark" type="submit">Search</button>
+        </form>
+    </div>
+</div>

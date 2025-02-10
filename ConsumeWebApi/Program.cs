@@ -1,5 +1,13 @@
 ﻿using StockWebApi.Services;
 
+using StockWebApi.Models;
+using Microsoft.EntityFrameworkCore;
+using StockWebApi.Context;
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddDbContext<DataContext>(opt => opt.UseIn("Database"));
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
