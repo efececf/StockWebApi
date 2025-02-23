@@ -2,9 +2,10 @@
 {
     public class StockPortfolio
     {
-        public int Id { get; set; }
-        public int PortfolioId { get; set; }
+        public Guid Id { get; set; }
+        public Guid PortfolioId { get; set; }
         public string StockName { get; set; }
         public decimal StockBuyingPrice { get; set; }
+        public int Quantity { get; set; }
     }
 }

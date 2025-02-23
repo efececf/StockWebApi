@@ -28,6 +28,8 @@ namespace StockWebApi.Controllers
             {
                 // Null durumunda özel bir hata mesajı veya boş bir model döndürebilirsiniz
                 return View("Error"); // veya bir hata mesajı gösterebiliriz
+            }
+        }
 
     }
 }

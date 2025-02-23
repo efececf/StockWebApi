@@ -36,6 +36,9 @@ namespace StockWebApi.Repositories
 
             _context.SaveChangesAsync();
         }
+        public async Task<User> GetByUserName(string userName){
+            return await _context.Users.FirstOrDefaultAsync(x => x.UserName == userName);
+        }
 
     }
 }

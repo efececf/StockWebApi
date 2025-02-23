@@ -10,7 +10,13 @@ namespace StockWebApi.Context
         public DbSet<User> Users { get; set; }
         public DbSet<Portfolio> Portfolios { get; set; }
         public DbSet<StockPortfolio> StocksPortfolios { get; set; }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionBuilder){
+            if(!optionBuilder.IsConfigured){
+                optionBuilder.UseNpgsql("Host=localhost;Port=5432;Database=StockDb;Username=postgres;Password=Venividivici_19");
+            }
 
+        }
+    
 
 
     }

@@ -3,8 +3,8 @@ namespace StockWebApi.Interfaces
 {
     public interface IStockPortfolioService
     {
-        public Task addStock(Stock stock,int quantity);
-        public Task delStock(Stock stock,int quantity);
+        public Task addStock(String stock,int quantity);
+        public Task delStock(String stock,int quantity);
         public Task showProfit();
     }
 }

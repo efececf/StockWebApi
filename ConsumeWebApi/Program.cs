@@ -5,10 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using StockWebApi.Context;
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddDbContext<DataContext>(opt => opt.UseIn("Database"));
 
-var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<DataContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

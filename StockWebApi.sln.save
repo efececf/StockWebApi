@@ -6,6 +6,8 @@ MinimumVisualStudioVersion = 10.0.40219.1
 
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockWebApi", "ConsumeWebApi\StockWebApi.csproj", "{AF3E3EC8-8363-45EB-B256-23A34F829D50}"
 
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockWebApi", "ConsumeWebApi\StockWebApi.csproj", "{AF3E3EC8-8363-45EB-B256-23A34F829D50}"
+
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,3 +27,9 @@ Global
 		SolutionGuid = {A7BE1225-8079-42AD-BC4C-C5006A41DEA6}
 	EndGlobalSection
 EndGlobal
+dotnet clean
+
+^X
+dotnet clean
+^X
+
