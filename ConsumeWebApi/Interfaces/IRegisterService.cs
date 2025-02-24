@@ -1,5 +1,5 @@
 using System;
-using StockWebApi.Models;
+using StockWebApi.Models.Register;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
