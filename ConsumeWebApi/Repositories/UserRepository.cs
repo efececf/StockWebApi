@@ -6,7 +6,7 @@ using StockWebApi.Models;
 
 namespace StockWebApi.Repositories
 {
-    public class UserRepository:IRepository<User>
+    public class UserRepository: IUserRepository
     {
         private readonly DataContext _context;
         public UserRepository(DataContext context)

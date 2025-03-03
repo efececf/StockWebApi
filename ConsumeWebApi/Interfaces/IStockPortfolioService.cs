@@ -5,6 +5,6 @@ namespace StockWebApi.Interfaces
     {
         public Task addStock(String stock,int quantity);
         public Task delStock(String stock,int quantity);
-        public Task showProfit();
+        //public Task showProfit();
     }
 }

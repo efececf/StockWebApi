@@ -7,8 +7,8 @@ namespace StockWebApi.Services
     public class PortfolioService:IPortfolioService
     {
         private StockService _stockService;
-        private IRepository<Portfolio> _repo;
-        public PortfolioService(StockService stockService,IRepository<Portfolio> repo) 
+        private IPortfolioRepository _repo;
+        public PortfolioService(StockService stockService,IPortfolioRepository repo) 
         {
             _stockService = stockService;
             _repo=repo;

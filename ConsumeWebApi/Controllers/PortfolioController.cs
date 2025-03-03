@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace ConsumeWebApi.Controllers
+namespace StockWebApi.Controllers
 {
     [Route("[controller]")]
     public class PortfolioController : Controller

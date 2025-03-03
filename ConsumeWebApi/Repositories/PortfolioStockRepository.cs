@@ -5,7 +5,7 @@ using StockWebApi.Models;
 
 namespace StockWebApi.Repositories
 {
-    public class PortfolioStockRepository:IRepository<StockPortfolio>
+    public class PortfolioStockRepository:IPortfolioStockRepository
     {
         private readonly DataContext _dataContext;
         public PortfolioStockRepository(DataContext dataContext)

@@ -4,11 +4,11 @@ using StockWebApi.Repositories;
 
 namespace StockWebApi.Services
 {
-    public class StockPortfolioService:IStockPortfolioService
+    public class StockPortfolioService: IStockPortfolioService
     {
         private readonly StockService _stockService;
-        private readonly PortfolioStockRepository _repo;
-        public StockPortfolioService(StockService stockService,PortfolioStockRepository repo)
+        private readonly IPortfolioStockRepository _repo;
+        public StockPortfolioService(StockService stockService,IPortfolioStockRepository repo)
         {
             _stockService = stockService;
             _repo = repo;
@@ -22,6 +22,15 @@ namespace StockWebApi.Services
             await _repo.Add(mystock);
 
         }
+         public async Task delStock(String stockName, int quantity, Guid portfolioID)
+        {
+            var mystocks= async _repo.StockPortfolios.FindAsync(portfolioID);
+            var theStock=mystocks.FirstOrDefault(x => x.StockName==stockName);
+            theStock.Quantity-=quantity;
+            await _repo.Update(theStock);
+
+        }
+
 
     }
 }
