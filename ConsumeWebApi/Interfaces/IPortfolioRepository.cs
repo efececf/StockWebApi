@@ -13,6 +13,7 @@ namespace StockWebApi.Interfaces
         Task Add(Portfolio portfolio);
         Task Update(Portfolio portfolio);
         Task DeleteById(Guid id);
+        Task changeName(Guid id, string name);
 
     }
 }

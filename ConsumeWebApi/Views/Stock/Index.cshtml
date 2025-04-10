@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Here the Stock information you wanted to see";
+    var searchString = Context.Request.Query["searchString"];///burda stockControllera yollanan http isteğindeki searchString parametresi değerini alır.
 }
 @model StockWebApi.Models.Stock
 @if(Model==null)
@@ -25,8 +26,7 @@ else
               "symbols": [
                 [
 
-                  "@Model.name",
-                  "@Model.name|1D"
+                  ["@searchString", "@searchString|1D"]
                 ]
             
                   "Apple",

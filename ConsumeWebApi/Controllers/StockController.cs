@@ -20,7 +20,7 @@ namespace StockWebApi.Controllers
 
             string symbol = searchString;
 
-            string symbol = "AAPL";
+            //string symbol = "AAPL";
 
             //string symbol = searchString;
             var stock =await _stockService.GetStock(symbol);
@@ -28,6 +28,9 @@ namespace StockWebApi.Controllers
             {
                 // Null durumunda özel bir hata mesajı veya boş bir model döndürebilirsiniz
                 return View("Error"); // veya bir hata mesajı gösterebiliriz
+            }
+            else{
+                return View(stock);
             }
         }
 

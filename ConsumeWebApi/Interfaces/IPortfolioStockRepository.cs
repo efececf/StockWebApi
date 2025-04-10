@@ -9,7 +9,7 @@ namespace StockWebApi.Interfaces
     public interface IPortfolioStockRepository
     {
         Task<List<StockPortfolio>> GetAll();
-        Task<StockPortfolio> GetbyId(Guid id);
+        Task<List<StockPortfolio>> GetbyId(Guid id);
         Task Add(StockPortfolio portfoliostock);
         Task Update(StockPortfolio stockportfolio);
         Task DeleteById(Guid id);

@@ -61,8 +61,8 @@
                 if (response.ok) {
                     localStorage.removeItem("token");
                     sessionStorage.removeItem("token");
-                    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                    window.location.href = "/login";
+                    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";//expires time 1970 en ayarlayınca tarayıcı otomotik olarak cookieyi geçersiz hale getiri bundle unix timedır ve geçmiş tarih oldugundan otomotik silinir
+                    window.location.href = "/Home/Index"; // HomeController'ın Index action'ına yönlendirme
                 }
             })
             .catch(error => console.error("Çıkış işlemi sırasında hata oluştu:", error));

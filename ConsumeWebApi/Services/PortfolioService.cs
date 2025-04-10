@@ -25,6 +25,9 @@ namespace StockWebApi.Services
         {
             await _repo.DeleteById(id);
         }
+        public async Task changePortfolioName(Guid id,string newName){
+            await _repo.changeName(id,newName);
+        }
 
     }
 }

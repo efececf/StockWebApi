@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using StockWebApi.Interfaces;
 
 namespace StockWebApi.Controllers
 {
@@ -12,10 +13,12 @@ namespace StockWebApi.Controllers
     public class RegisterController : Controller
     {
         private readonly ILogger<RegisterController> _logger;
+        private IRegisterService _registerService;
 
-        public RegisterController(ILogger<RegisterController> logger)
+        public RegisterController(ILogger<RegisterController> logger,IRegisterService service)
         {
             _logger = logger;
+            _registerService = service;
         }
 
         public IActionResult Index()
@@ -23,10 +26,9 @@ namespace StockWebApi.Controllers
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View("Error!");
+        [HttpPost]
+        public async Task<IActionResult> Register(string name,string username,string password,string userrole){
+
         }
     }
 }

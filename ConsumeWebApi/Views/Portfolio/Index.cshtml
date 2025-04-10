@@ -1,0 +1,43 @@
+@model List<StockWebApi.Models.StockPortfolio>
+
+@{
+    ViewData["Title"] = "Portföyüm";
+}
+
+<h2>Portföyüm</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Hisse Adı</th>
+            <th>Miktar</th>
+            <th>Al / Sat</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var stock in Model)
+        {
+            <tr>
+                <td>@stock.StockName</td>
+                <td>@stock.Quantity</td>
+                <td>
+                    <!-- ALIM FORMU -->
+                    <form method="post" asp-controller="Portfolio" asp-action="UpdatePortfolio" class="d-inline">
+                        <input type="hidden" name="stockName" value="@stock.StockName" />
+                        <input type="hidden" name="editType" value="1" />
+                        <input type="number" name="quantity" min="1" class="form-control d-inline w-25" placeholder="Miktar" required />
+                        <button type="submit" class="btn btn-success btn-sm">Al</button>
+                    </form>
+
+                    <!-- SATIM FORMU -->
+                    <form method="post" asp-controller="Portfolio" asp-action="UpdatePortfolio" class="d-inline">
+                        <input type="hidden" name="stockName" value="@stock.StockName" />
+                        <input type="hidden" name="editType" value="2" />
+                        <input type="number" name="quantity" min="1" max="@stock.Quantity" class="form-control d-inline w-25" placeholder="Miktar" required />
+                        <button type="submit" class="btn btn-danger btn-sm">Sat</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

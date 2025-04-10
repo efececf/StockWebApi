@@ -5,7 +5,7 @@ using StockWebApi.Models;
 
 namespace StockWebApi.Repositories
 {
-    public class PortfolioStockRepository:IPortfolioStockRepository
+    public class PortfolioStockRepository: IPortfolioStockRepository
     {
         private readonly DataContext _dataContext;
         public PortfolioStockRepository(DataContext dataContext)
@@ -17,9 +17,9 @@ namespace StockWebApi.Repositories
             var Stocks=await _dataContext.StocksPortfolios.ToListAsync();
             return Stocks;
         }
-        public async Task<StockPortfolio> GetbyId(Guid id){
-            var Stock = await _dataContext.StocksPortfolios.FirstOrDefaultAsync(x => x.Id == id);
-            return Stock;
+        public async Task<List<StockPortfolio>> GetbyId(Guid id){
+            var Stocks = await _dataContext.StocksPortfolios.Where(x => x.PortfolioId == id).ToListAsync();
+            return Stocks;
         }
         public async Task DeleteById(Guid id){
             var Stock = await _dataContext.StocksPortfolios.FirstOrDefaultAsync(x => x.Id == id);

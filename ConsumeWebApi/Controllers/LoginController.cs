@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using StockWebApi.Interfaces;
-using StockWebApi.Models;
+using StockWebApi.Models.Login;
 using StockWebApi.Services;
 
 namespace StockWebApi.Controllers
@@ -28,7 +28,7 @@ namespace StockWebApi.Controllers
             return View();
         }
 
-      [HttpPost]
+      [HttpPost("login")]
       public async Task<IActionResult> Login(string userName, string password,string? returnUrl=null){
             if (string.IsNullOrEmpty(userName)){
                 ModelState.AddModelError("","Bütün Alanları doldurmak zorunludur!");
@@ -44,22 +44,22 @@ namespace StockWebApi.Controllers
                     Response.Cookies.Append("token",authtoken.Token,new CookieOptions{//cookie şeklinde frontende yollar.btw Httpcontext sadece controller veya midddlewareda kullanılır
                         HttpOnly=true,
                         Secure=true,
-                        Expires=Expires = DateTimeOffset.UtcNow.AddHours(3)
+                        Expires= DateTimeOffset.UtcNow.AddHours(3)
                     });
                     //return RedirectToAction("Index","Home");
                     return LocalRedirect(returnUrl ?? Url.Action("Index", "Home"));
                 }
                 else {
-                    ModelStateAddModelError("","Geçersiz kullanıcı adı veya şifre");
+                    ModelState.AddModelError("","Geçersiz kullanıcı adı veya şifre");
                     return View();
                 }
                 
             }
         }
-      [HttpPost]
-      public async IActionResult Logout(){
-        Resposne.Cookies.Delete("token");//frontendde cookilerin içinde saklanan token isimli şeyi siler
-        return Ok();
+      [HttpPost("logout")]
+      public async Task<IActionResult> Logout(){
+        Response.Cookies.Delete("token");//frontendde cookilerin içinde saklanan token isimli şeyi siler
+        return RedirectToAction("Index","Home");
       }
     }
 }

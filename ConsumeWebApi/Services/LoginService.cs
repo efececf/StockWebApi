@@ -21,18 +21,21 @@ namespace StockWebApi.Services
             _tokenService = tokenService;
         }
         public async Task<AuthToken> Login(LoginRequest request){
-            var user=_repo.GetByUserName(request.UserName);
+            var user=await _repo.GetByUserName(request.UserName);
             if(user==null){
                 return null;
             }
             else{
-                var result=_hasher.VerifyPassword(user.Password,request.Password);
+                var result=_hasher.VerifyPassword(user.PasswordHash,request.Password);
                 if(result==true){
                     new LoginResult{
-                    isLogin=result,
+                    IsLogin=result,
                     }; 
-                    var token=_tokenService.GenerateToken(user);
-                    return _tokenService;
+                    var token=await _tokenService.GenerateToken(user);
+                    return token;
+                }
+                else{
+                    return null;
                 }
             }
 

@@ -18,14 +18,14 @@ namespace StockWebApi.Models
         
         public string Hash(string password){
             var salt=RandomNumberGenerator.GetBytes(SaltSize);
-            var hash=Rfc289DeriveBytes.Pbkdf2(password, salt, Iterations,_hashAlgoName,KeySize);
+            var hash=Rfc2898DeriveBytes.Pbkdf2(password, salt, Iterations,_hashAlgoName,KeySize);
             return string.Join(Delimeter,Convert.ToBase64String(salt),Convert.ToBase64String(hash));
         }
         public bool VerifyPassword(string passwordHash,string inputPassword){
             var elements=passwordHash.Split(Delimeter);
             var salt=Convert.FromBase64String(elements[0]);
             var hash=Convert.FromBase64String(elements[1]);
-            var inputHash=Rfc289DeriveBytes.Pbkdf2(inputPassword, salt, Iterations,_hashAlgoName,KeySize);
+            var inputHash=Rfc2898DeriveBytes.Pbkdf2(inputPassword, salt, Iterations,_hashAlgoName,KeySize);
             return CryptographicOperations.FixedTimeEquals(hash, inputHash);
 
         }

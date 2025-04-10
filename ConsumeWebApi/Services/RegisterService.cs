@@ -11,14 +11,14 @@ namespace StockWebApi.Services
 {
     public class RegisterService: IRegisterService
     {
-        private readonly IRepository<User> _repo;
+        private readonly IUserRepository _repo;
         private IPasswordHasher _passwordHasher;
-        public RegisterService(IRepository<User> repo,IPasswordHasher passwordHasher){
+        public RegisterService(IUserRepository repo,IPasswordHasher passwordHasher){
             _repo=repo;
             _passwordHasher=passwordHasher;
         }
         public async Task<RegisterResult> Register(RegisterRequest request){
-            var user=_repo.GetByUserName(request.UserName);
+            var user=_repo.GetByUserName(request.Username);
             if(user!=null){
                 var result= new RegisterResult
                 {
@@ -29,11 +29,11 @@ namespace StockWebApi.Services
             else{
                 var newUser = new User
                 {
-                    UserName = request.UserName,
+                    UserName = request.Username,
                     PasswordHash=_passwordHasher.Hash(request.Password),
                     Name=request.Name,
                 };
-                _repo.Add(newUser);
+                await _repo.Add(newUser);
                 var result= new RegisterResult
                 {
                     IsRegistered=true,

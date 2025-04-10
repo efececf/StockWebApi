@@ -35,7 +35,7 @@ namespace StockWebApi.Services
                 issuer:"http://localhost:5094",
                 audience:"http://localhost:5094",
                 claims:claims,
-                expires:DateTimeOffset.UtcNow.AddHours(3),
+                expires:DateTime.UtcNow.AddHours(3),
                 signingCredentials:creds
             );
             var TokenString= new JwtSecurityTokenHandler().WriteToken(token);//oluşan tokeni stringe döndürür
@@ -43,7 +43,7 @@ namespace StockWebApi.Services
                 Token=TokenString,
                 UserId=user.Id,
                 UserName=user.UserName,
-                DateTimeExpiration=DateTimeOffset.UtcNow.AddHours(3),
+                Expiration=DateTime.UtcNow.AddHours(3),
                 UserRole=user.UserRole
             };
             return authtoken;
