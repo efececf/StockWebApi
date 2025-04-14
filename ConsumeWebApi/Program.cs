@@ -8,81 +8,91 @@ using Microsoft.IdentityModel.Tokens;
 using StockWebApi.Repositories;
 using System.Text;
 
-var builder = WebApplication.CreateBuilder(args);
-
-
-builder.Services.AddDbContext<DataContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-
-
-// Add services to the container.
-builder.Services.AddControllersWithViews();
-
-var apiKey = builder.Configuration["Finnhub:ApiKey"];
-builder.Services.AddHttpClient<StockService>(client =>
+namespace StockWebApi
 {
-    client.BaseAddress = new Uri("https://finnhub.io/api/v1/");
-});
-builder.Services.AddScoped<StockService>(provider =>
-{
-    var httpClient = provider.GetRequiredService<IHttpClientFactory>().CreateClient();
-    return new StockService(httpClient, apiKey); // Burada apiKey doğru geçiliyor
-});
-
-builder.Services.AddScoped<ILoginService,LoginService>();
-builder.Services.AddScoped<IPortfolioService,PortfolioService>();
-builder.Services.AddScoped<IRegisterService,RegisterService>();
-builder.Services.AddScoped<IStockPortfolioService,StockPortfolioService>();
-builder.Services.AddScoped<IUserRepository,UserRepository>();
-builder.Services.AddScoped<IPortfolioRepository,PortfolioRepository>();
-builder.Services.AddScoped<IPortfolioStockRepository,PortfolioStockRepository>();
-builder.Services.AddScoped<IPasswordHasher,PasswordHasher>();
-builder.Services.AddScoped<ITokenService, TokenService>();
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+    public class Program
     {
-        options.TokenValidationParameters = new TokenValidationParameters
+        public static void Main(string[] args)
         {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = "http://localhost:5094",   // ✅ Token'ı üreten MVC Web App
-            ValidAudience = "http://localhost:5094", // ✅ Token'ı kullanan uygulama (MVC Web App)
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Venividivici_19"))
-        };
-    });
-    builder.Services.AddAuthorization();
+            File.AppendAllText("startup.log", $"Main metodu başladı: {DateTime.Now}\n");
 
-builder.Services.AddControllersWithViews();
+            try{
+                var builder = WebApplication.CreateBuilder(args);
+                builder.Logging.ClearProviders();
+                builder.Logging.AddConsole();
 
-var app = builder.Build();
+                builder.Services.AddDbContext<DataContext>(options =>
+                    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+                builder.Services.AddControllersWithViews();
+
+                var apiKey = builder.Configuration["Finnhub:ApiKey"];
+                builder.Services.AddHttpClient<StockService>(client =>
+                {
+                    client.BaseAddress = new Uri("https://finnhub.io/api/v1/");
+                });
+                builder.Services.AddScoped<StockService>(provider =>
+                {
+                    var httpClient = provider.GetRequiredService<IHttpClientFactory>().CreateClient();
+                    return new StockService(httpClient, apiKey); // Burada apiKey doğru geçiliyor
+                });
+
+                builder.Services.AddScoped<ILoginService, LoginService>();
+                builder.Services.AddScoped<IPortfolioService, PortfolioService>();
+                builder.Services.AddScoped<IRegisterService, RegisterService>();
+                builder.Services.AddScoped<IStockPortfolioService, StockPortfolioService>();
+                builder.Services.AddScoped<IUserRepository, UserRepository>();
+                builder.Services.AddScoped<IPortfolioRepository, PortfolioRepository>();
+                builder.Services.AddScoped<IPortfolioStockRepository, PortfolioStockRepository>();
+                builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+                builder.Services.AddScoped<ITokenService, TokenService>();
+
+                builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
+                    {
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = true,
+                            ValidateAudience = true,
+                            ValidateLifetime = true,
+                            ValidateIssuerSigningKey = true,
+                            ValidIssuer = "http://localhost:5094",   // ✅ Token'ı üreten MVC Web App
+                            ValidAudience = "http://localhost:5094", // ✅ Token'ı kullanan uygulama (MVC Web App)
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Venividivici_19"))
+                        };
+                    });
+                builder.Services.AddAuthorization();
+
+            
+
+                var app = builder.Build();
+                app.Logger.LogInformation("Uygulama başlatılıyor...");
+
+                if (!app.Environment.IsDevelopment())
+                {
+                    app.UseExceptionHandler("/Home/Error");
+                    app.UseHsts();
+                }
+
+                app.UseHttpsRedirection();
+                app.UseStaticFiles();
+                app.UseRouting();
+                app.UseAuthentication();
+                app.UseAuthorization();
+
+                app.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                app.Logger.LogInformation("Uygulama başlatıldı 🚀");
+                app.Run();
+            }
+            catch(Exception ex){
+                File.AppendAllText("error.log", $"HATA: {ex.Message}\nSTACK: {ex.StackTrace}\n");
+                Console.WriteLine("Hata: " + ex.Message);
+                Console.WriteLine("StackTrace: " + ex.StackTrace);
+            }
+            
+
+        }
+    }
 }
-
-
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseAuthentication(); 
-app.UseAuthorization();  
-
-
-app.UseRouting();
-
-app.UseAuthorization();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-
-app.Run();

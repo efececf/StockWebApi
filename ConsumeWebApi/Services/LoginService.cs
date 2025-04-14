@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using StockWebApi.Models;
 using StockWebApi.Models.Login;
-using StockWebApi.Interfaces;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -31,7 +30,7 @@ namespace StockWebApi.Services
                     new LoginResult{
                     IsLogin=result,
                     }; 
-                    var token=await _tokenService.GenerateToken(user);
+                    var token= _tokenService.GenerateToken(user);
                     return token;
                 }
                 else{

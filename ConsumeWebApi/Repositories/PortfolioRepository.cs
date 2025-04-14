@@ -16,22 +16,23 @@ namespace StockWebApi.Repositories
         }
         public async Task<List<Portfolio>> GetAll()
         {
-            var portfolios= await _context.Portfolios.ToListAsync();
+            var portfolios=await _context.Portfolios.ToListAsync();
             return portfolios;
         }
         public async Task<Portfolio> GetbyId(Guid id)
         {
             //_context.Portfolios.
-            return await _context.Portfolios.FirstOrDefaultAsync(x => x.UserId==id);
+            return _context.Portfolios.FirstOrDefault(x => x.UserId==id);
         }
         public async Task Add(Portfolio port)
         {
             _context.Portfolios.Add(port);
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
         public async Task Update(Portfolio port)
         {
             _context.Portfolios.Update(port);
+            await _context.SaveChangesAsync();
         }
         public async Task DeleteById(Guid id)
         {
@@ -43,6 +44,7 @@ namespace StockWebApi.Repositories
         public async Task changeName(Guid id, string name){
             var portfolio=await _context.Portfolios.FindAsync(id);
             portfolio.Name=name;
+            await _context.SaveChangesAsync();
         }
     }
 }

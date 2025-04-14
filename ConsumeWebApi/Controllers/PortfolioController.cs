@@ -30,7 +30,7 @@ namespace StockWebApi.Controllers
             _stockPortfolioService = stockPortfolioService;
         }
 
-        public async Task<IActionResult> Index(Guid id)
+        public async Task<IActionResult> Index()
         {
             var token=Request.Cookies["token"];
             if (token == null){
@@ -47,7 +47,7 @@ namespace StockWebApi.Controllers
             var stocks=_stockPortfolioService.ShowStocksOfUser(userId);
             return View(stocks);
         }
-        [HttpPost]
+        [HttpPut]
         public async Task<IActionResult> UpdatePortfolio(Guid id,[FromForm]int quantity,[FromForm]string stockName,[FromForm]int editType){
             var token=Request.Cookies["token"];
             var handler= new JwtSecurityTokenHandler();

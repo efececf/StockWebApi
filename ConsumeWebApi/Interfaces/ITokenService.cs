@@ -8,6 +8,6 @@ namespace StockWebApi.Interfaces
 {
     public interface ITokenService
     {
-        public Task<AuthToken> GenerateToken(User user); 
+        public AuthToken GenerateToken(User user); 
     }
 }

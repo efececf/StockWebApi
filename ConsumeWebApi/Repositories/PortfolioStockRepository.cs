@@ -24,16 +24,17 @@ namespace StockWebApi.Repositories
         public async Task DeleteById(Guid id){
             var Stock = await _dataContext.StocksPortfolios.FirstOrDefaultAsync(x => x.Id == id);
             _dataContext.StocksPortfolios.Remove(Stock);
-            _dataContext.SaveChanges();
+            await _dataContext.SaveChangesAsync();
         }
         public async Task Add(StockPortfolio Stock)
         {
             _dataContext.StocksPortfolios.Add(Stock);
-            _dataContext.SaveChangesAsync();
+            await _dataContext.SaveChangesAsync();
         }
         public async Task Update(StockPortfolio Stock)
         {
             _dataContext.Update(Stock);
+            await _dataContext.SaveChangesAsync();
         }
     }
 }

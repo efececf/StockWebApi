@@ -8,7 +8,7 @@
 
 <!-- Form Başlangıcı -->
 <form asp-action="Login" method="post">
-    <input type="hidden" name="returnUrl" value="@Context.Request.Query["returnUrl"]" />
+    <input type="hidden" name="returnUrl" value="@HttpContext.Request.Query["returnUrl"]" />
 
 
     <!-- ❗ Hata mesajları burada gösterilecek -->

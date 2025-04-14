@@ -24,7 +24,7 @@ namespace StockWebApi.Services
                 var stock = stocks.FirstOrDefault(x=>x.StockName==stockName);//burda firstordefaultasync kullanamadık çünkü bellekte sorgu yapıyo veritabanına gitmiyor 
                 if(stock!=null){
                     stock.Quantity+=quantity;
-                    _repo.Update(stock);
+                    await _repo.Update(stock);
                 }
             }
             StockPortfolio mystock= new StockPortfolio{

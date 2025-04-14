@@ -18,7 +18,7 @@ namespace StockWebApi.Services
             _passwordHasher=passwordHasher;
         }
         public async Task<RegisterResult> Register(RegisterRequest request){
-            var user=_repo.GetByUserName(request.Username);
+            var user=await _repo.GetByUserName(request.Username);
             if(user!=null){
                 var result= new RegisterResult
                 {

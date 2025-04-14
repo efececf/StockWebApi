@@ -21,7 +21,7 @@ namespace StockWebApi.Services
         public TokenService(IConfiguration config){
             _config = config;
         }
-        public async Task<AuthToken> GenerateToken(User user){
+        public AuthToken GenerateToken(User user){
             var key=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecurityKey));
             var creds=new SigningCredentials(key,SecurityAlgorithms.HmacSha256);
             var claims = new List<Claim> 
