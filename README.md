@@ -1,0 +1,1 @@
+Bu proje internet sayesinde çalısan .net core framework ile yazılmıs kişisel bir borsa sitesidir. Kaydolan kişi portfoyüne amerikan hissesi ekleyebilir, aratarak anlık hisse fiyatlarına ve hisse fiyatlarının yakın gelecekteki tahmini değerine ulaabilir.
