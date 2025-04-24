@@ -52,6 +52,13 @@ namespace StockWebApi
                     httpClient.BaseAddress = new Uri("https://finnhub.io/api/v1/");
                     return new NewsService(httpClient, apiKey!);
                 });
+                builder.Services.AddTransient<PredictionService>(sp =>
+                {
+                    var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
+                    var httpClient = httpClientFactory.CreateClient();
+                    httpClient.BaseAddress = new Uri("http://127.0.0.1:8000");
+                    return new PredictionService(httpClient);
+                });
 
                 // Dependency Injection
                 builder.Services.AddScoped<ILoginService, LoginService>();

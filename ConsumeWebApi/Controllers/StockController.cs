@@ -10,14 +10,16 @@ namespace StockWebApi.Controllers
     public class StockController : Controller
     {
         public readonly StockService _stockService;
+        public readonly PredictionService _predictionService;
         public readonly IStockPortfolioService _stockPortfolioService;
-        public StockController(StockService stockService,IStockPortfolioService stockPortfolioService)
+        public StockController(StockService stockService,IStockPortfolioService stockPortfolioService, PredictionService predictionService)
         {
             _stockService = stockService;
             _stockPortfolioService = stockPortfolioService;
+            _predictionService = predictionService;
         }
 
-        [HttpGet]
+        [HttpGet("Index/{searchString}")]
         public async Task<IActionResult> Index(string searchString)
         {
 
@@ -33,6 +35,9 @@ namespace StockWebApi.Controllers
                 return View("Error"); // veya bir hata mesajı gösterebiliriz
             }
             else{
+                TempData["searchString"] = searchString;
+                TempData.Keep("searchString");//bu sayede tempdata predition veya buythisstock içinde bir kere kullanılınca silinmicek ve diğer metodlar tarafından da kullanılacak
+                ViewBag.SearchString = searchString;
                 return View(stock);
             }
         }
@@ -47,13 +52,27 @@ namespace StockWebApi.Controllers
             var jwtToken=handler.ReadJwtToken(token);
             var userIdString=jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
             Guid.TryParse(userIdString, out Guid userId);
-            var symbol=Request.Query["searchString"].ToString();
+            var symbol=TempData["searchString"] as string;
             await _stockPortfolioService.addStock(symbol, quantity, userId);
-            return View();
+            return View("Index");
 
 
 
         }
+        [HttpGet("Prediction")]
+        public async Task<IActionResult> Prediction(){
+            var searchString = TempData["searchString"] as string;
+            if (!string.IsNullOrEmpty(searchString))
+                {
+                    var prediction = await _predictionService.GetPrediction(searchString);
+                    return View(prediction);
+                }
+            else
+                {
+        // Eğer searchString boşsa veya yoksa uygun bir hata işlemi yapılabilir
+                return View("Error");
+                }
+            }
 
-    }
+        }
 }

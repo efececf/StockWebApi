@@ -1,0 +1,23 @@
+@model StockWebApi.Models.Prediction
+
+@{
+    ViewData["Title"] = "Stock Prediction";
+}
+
+@if (Model == null)
+{
+    <p>Prediction data is not available.</p>
+}
+else
+{
+    <h3>Predicted Stock: @Model.stockSymbol</h3>
+
+    @if (Model.predictedPrice != null && Model.predictedPrice.Any())
+    {
+        <p>Predicted Price: @Model.predictedPrice[0]</p>
+    }
+    else
+    {
+        <p>No predicted prices found.</p>
+    }
+}

@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Here is the Stock information you wanted to see";
-    var searchString = Context.Request.Query["searchString"].ToString();
+    var searchString = ViewBag.SearchString as string;
+
 }
 @model StockWebApi.Models.Stock
 
@@ -33,6 +34,10 @@ else
         </script>
     </div>
     <!-- TradingView Widget END -->
+
+    <!-- Prediction Button -->
+    <a href="@Url.Action("Prediction", "Stock")" class="btn btn-secondary mt-3">Show Prediction</a>
+
 
     <div>
         <h3>Stock Information</h3>
