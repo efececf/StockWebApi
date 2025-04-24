@@ -25,7 +25,8 @@ namespace StockWebApi.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            ViewData["Title"]="Giriş Yap";
+            return View(new LoginRequest());
         }
 
       [HttpPost("login")]
@@ -57,7 +58,7 @@ namespace StockWebApi.Controllers
             }
         }
       [HttpPost("logout")]
-      public async Task<IActionResult> Logout(){
+      public IActionResult Logout(){
         Response.Cookies.Delete("token");//frontendde cookilerin içinde saklanan token isimli şeyi siler
         return RedirectToAction("Index","Home");
       }

@@ -1,15 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StockWebApi.Services;
 using StockWebApi.Controllers;
+using StockWebApi.Models;
 
 namespace StockWebApi.Controllers
 {
     public class HomeController : Controller
     {
         private readonly StockService _stockService;
-        public HomeController(StockService stockService)
+        private readonly NewsService _newsService;
+        public HomeController(StockService stockService, NewsService newsService)
         {
             _stockService = stockService;
+            _newsService = newsService;
         }
         [HttpPost]
         public IActionResult SearchStock(string searchString)
@@ -25,9 +28,10 @@ namespace StockWebApi.Controllers
                 return RedirectToAction("Index", "Stock", new { searchString = searchString });
             }
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string Category)
         {
-           return View();
+            var news = await _newsService.GetNews(Category);
+            return View(news);
             
         }
     }

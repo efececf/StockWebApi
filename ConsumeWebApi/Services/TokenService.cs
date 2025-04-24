@@ -17,7 +17,7 @@ namespace StockWebApi.Services
     public class TokenService : ITokenService
     {
         private readonly IConfiguration _config;
-        private string SecurityKey="Venividivici_19";
+        private string SecurityKey="thisisaverylongsecretkeywith32characters!";
         public TokenService(IConfiguration config){
             _config = config;
         }
@@ -32,8 +32,8 @@ namespace StockWebApi.Services
                 new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64)
             };
             var token = new JwtSecurityToken(
-                issuer:"http://localhost:5094",
-                audience:"http://localhost:5094",
+                issuer:"http://localhost:5001",
+                audience:"http://localhost:5001",
                 claims:claims,
                 expires:DateTime.UtcNow.AddHours(3),
                 signingCredentials:creds

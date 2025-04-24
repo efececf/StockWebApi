@@ -23,8 +23,14 @@ namespace StockWebApi.Repositories
         }
         public async Task DeleteById(Guid id){
             var Stock = await _dataContext.StocksPortfolios.FirstOrDefaultAsync(x => x.Id == id);
-            _dataContext.StocksPortfolios.Remove(Stock);
-            await _dataContext.SaveChangesAsync();
+            if (Stock != null){
+                _dataContext.StocksPortfolios.Remove(Stock);
+                await _dataContext.SaveChangesAsync();
+            }
+            else{
+                throw new Exception("böyle bir yok");
+            }
+            
         }
         public async Task Add(StockPortfolio Stock)
         {

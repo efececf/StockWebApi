@@ -21,8 +21,14 @@ namespace StockWebApi.Repositories
         }
         public async Task<Portfolio> GetbyId(Guid id)
         {
+            var port=await _context.Portfolios.FirstOrDefaultAsync(x => x.UserId==id);
             //_context.Portfolios.
-            return _context.Portfolios.FirstOrDefault(x => x.UserId==id);
+            if(port!=null){
+                return port;
+            }
+            else{
+                throw new Exception("Böyle bir kullanıcı yok");
+            }
         }
         public async Task Add(Portfolio port)
         {
@@ -36,13 +42,20 @@ namespace StockWebApi.Repositories
         }
         public async Task DeleteById(Guid id)
         {
-            var port=await _context.Portfolios.FindAsync();
-            _context.Portfolios.Remove(port);
-
-            _context.SaveChangesAsync();
+            var port=await _context.Portfolios.FindAsync(id);
+            if (port!=null){
+                _context.Portfolios.Remove(port) ;
+            }
+            else{
+                throw new Exception("Böyle bir portfolyo yok zaten");
+            }
+            await _context.SaveChangesAsync();
         }
         public async Task changeName(Guid id, string name){
             var portfolio=await _context.Portfolios.FindAsync(id);
+            if(portfolio==null){
+                throw new Exception("Portföy bulunamadı");
+            }
             portfolio.Name=name;
             await _context.SaveChangesAsync();
         }

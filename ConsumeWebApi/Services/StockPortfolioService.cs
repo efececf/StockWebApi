@@ -19,12 +19,18 @@ namespace StockWebApi.Services
         ///hangi portfolyoyoa eklicen portfolioİd koy metodlara acilli
         public async Task addStock(String stockName, int quantity,Guid UserId)
         {   
-            var stocks=await this.ShowStocksOfUser(UserId);
-            if(stocks!=null){
-                var stock = stocks.FirstOrDefault(x=>x.StockName==stockName);//burda firstordefaultasync kullanamadık çünkü bellekte sorgu yapıyo veritabanına gitmiyor 
+            var portfolio = await _portfolioRepository.GetbyId(UserId);
+            var portfolioStocks=await this.ShowStocksOfUser(UserId);
+            if(portfolioStocks!=null){
+                var stock = portfolioStocks.FirstOrDefault(x=>x.StockName==stockName);//burda firstordefaultasync kullanamadık çünkü bellekte sorgu yapıyo veritabanına gitmiyor 
                 if(stock!=null){
                     stock.Quantity+=quantity;
                     await _repo.Update(stock);
+                    var stockInPortfolio=portfolio.Stocks.FirstOrDefault(x=>x.StockName==stock.StockName);
+                    stockInPortfolio.Quantity+=quantity;
+                    portfolio.Stocks.Remove(stock);
+                    portfolioStocks.Add(stockInPortfolio);
+                    await _portfolioRepository.Update(portfolio);
                 }
             }
             StockPortfolio mystock= new StockPortfolio{
@@ -32,6 +38,8 @@ namespace StockWebApi.Services
                 Quantity = quantity,
             };
             await _repo.Add(mystock);
+            portfolio.Stocks.Add(mystock);
+            await _portfolioRepository.Update(portfolio);
 
         }
          public async Task delStock(String stockName, int quantity, Guid portfolioID)
@@ -58,9 +66,6 @@ namespace StockWebApi.Services
                     }
 
                 return null;
-}
-
-
-
+            }
     }
 }

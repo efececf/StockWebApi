@@ -1,4 +1,6 @@
-﻿using StockWebApi.Services;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using StockWebApi.Services;
 using StockWebApi.Models;
 using StockWebApi.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +9,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using StockWebApi.Repositories;
 using System.Text;
+using System.Diagnostics;
+
 
 namespace StockWebApi
 {
@@ -14,29 +18,42 @@ namespace StockWebApi
     {
         public static void Main(string[] args)
         {
-            File.AppendAllText("startup.log", $"Main metodu başladı: {DateTime.Now}\n");
+        
 
-            try{
+            try
+            {
                 var builder = WebApplication.CreateBuilder(args);
+
                 builder.Logging.ClearProviders();
                 builder.Logging.AddConsole();
 
+                // DbContext
                 builder.Services.AddDbContext<DataContext>(options =>
                     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
                 builder.Services.AddControllersWithViews();
 
+                // HttpClient ve StockService için ApiKey ile injection
                 var apiKey = builder.Configuration["Finnhub:ApiKey"];
-                builder.Services.AddHttpClient<StockService>(client =>
+
+                builder.Services.AddHttpClient(); // IHttpClientFactory kullanılacak
+
+                builder.Services.AddTransient<StockService>(sp =>
                 {
-                    client.BaseAddress = new Uri("https://finnhub.io/api/v1/");
+                    var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
+                    var httpClient = httpClientFactory.CreateClient();
+                    httpClient.BaseAddress = new Uri("https://finnhub.io/api/v1/");
+                    return new StockService(httpClient, apiKey!);
                 });
-                builder.Services.AddScoped<StockService>(provider =>
+                builder.Services.AddTransient<NewsService>(sp =>
                 {
-                    var httpClient = provider.GetRequiredService<IHttpClientFactory>().CreateClient();
-                    return new StockService(httpClient, apiKey); // Burada apiKey doğru geçiliyor
+                    var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
+                    var httpClient = httpClientFactory.CreateClient();
+                    httpClient.BaseAddress = new Uri("https://finnhub.io/api/v1/");
+                    return new NewsService(httpClient, apiKey!);
                 });
 
+                // Dependency Injection
                 builder.Services.AddScoped<ILoginService, LoginService>();
                 builder.Services.AddScoped<IPortfolioService, PortfolioService>();
                 builder.Services.AddScoped<IRegisterService, RegisterService>();
@@ -47,6 +64,7 @@ namespace StockWebApi
                 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
                 builder.Services.AddScoped<ITokenService, TokenService>();
 
+                // JWT Authentication
                 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
                     {
@@ -56,14 +74,13 @@ namespace StockWebApi
                             ValidateAudience = true,
                             ValidateLifetime = true,
                             ValidateIssuerSigningKey = true,
-                            ValidIssuer = "http://localhost:5094",   // ✅ Token'ı üreten MVC Web App
-                            ValidAudience = "http://localhost:5094", // ✅ Token'ı kullanan uygulama (MVC Web App)
+                            ValidIssuer = "http://localhost:5094",
+                            ValidAudience = "http://localhost:5094",
                             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Venividivici_19"))
                         };
                     });
-                builder.Services.AddAuthorization();
 
-            
+                builder.Services.AddAuthorization();
 
                 var app = builder.Build();
                 app.Logger.LogInformation("Uygulama başlatılıyor...");
@@ -83,16 +100,24 @@ namespace StockWebApi
                 app.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+
                 app.Logger.LogInformation("Uygulama başlatıldı 🚀");
+
                 app.Run();
+                System.Diagnostics.Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "open",
+                        Arguments = "http://localhost:5001", // senin adresin neyse
+                        UseShellExecute = false
+                    });
+
             }
-            catch(Exception ex){
+            catch (Exception ex)
+            {
                 File.AppendAllText("error.log", $"HATA: {ex.Message}\nSTACK: {ex.StackTrace}\n");
                 Console.WriteLine("Hata: " + ex.Message);
                 Console.WriteLine("StackTrace: " + ex.StackTrace);
             }
-            
-
         }
     }
 }

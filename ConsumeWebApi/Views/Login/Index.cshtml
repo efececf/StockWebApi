@@ -1,14 +1,15 @@
-@page
-@model StockWebApi.Views.Login.Index
+@model StockWebApi.Models.Login.LoginRequest
 @{
     ViewData["Title"] = "Giriş Yap";
+    var returnUrl = Context.Request.Query["returnUrl"].FirstOrDefault();
 }
+
 
 <h2>Giriş Yap</h2>
 
 <!-- Form Başlangıcı -->
 <form asp-action="Login" method="post">
-    <input type="hidden" name="returnUrl" value="@HttpContext.Request.Query["returnUrl"]" />
+    <input type="hidden" name="returnUrl" value="@returnUrl" />
 
 
     <!-- ❗ Hata mesajları burada gösterilecek -->

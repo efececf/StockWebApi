@@ -10,10 +10,6 @@ using System.Security.Claims;
 using StockWebApi.Models;
 using StockWebApi.Services;
 using StockWebApi.Interfaces;
-{
-    
-}
-
 namespace StockWebApi.Controllers
 {
     [Route("[controller]")]
@@ -29,7 +25,7 @@ namespace StockWebApi.Controllers
             _portfolioService = portfolioService;
             _stockPortfolioService = stockPortfolioService;
         }
-
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var token=Request.Cookies["token"];
@@ -44,7 +40,7 @@ namespace StockWebApi.Controllers
             //simdi string userid yi geri guid yapmalıyız.
             var userIdString=jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
             Guid.TryParse(userIdString, out Guid userId);
-            var stocks=_stockPortfolioService.ShowStocksOfUser(userId);
+            var stocks=await _stockPortfolioService.ShowStocksOfUser(userId);
             return View(stocks);
         }
         [HttpPut]
@@ -64,10 +60,6 @@ namespace StockWebApi.Controllers
 
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View("Error!");
-        }
+        
     }
 }

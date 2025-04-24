@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Update.Internal;
+using Microsoft.VisualBasic;
 using StockWebApi.Context;
 using StockWebApi.Interfaces;
 using StockWebApi.Models;
@@ -19,25 +20,28 @@ namespace StockWebApi.Repositories
         }
         public async Task<User> GetbyId(Guid id) 
         {
-            return await _context.Users.FindAsync(id);
+            var user=await _context.Users.FindAsync(id);
+            return user;
         }
         public async Task Add(User user) 
         {
             _context.Users.Add(user);
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
         public async Task Update(User user)
         {
             _context.Users.Update(user);
+            await _context.SaveChangesAsync();
         }
         public async Task DeleteById(Guid id)
         {
             _context.Remove(id);
 
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
         public async Task<User> GetByUserName(string userName){
-            return await _context.Users.FirstOrDefaultAsync(x => x.UserName == userName);
+            var user=await _context.Users.FirstOrDefaultAsync(x => x.UserName == userName);
+            return user;
         }
 
     }

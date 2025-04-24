@@ -32,6 +32,7 @@ namespace StockWebApi.Services
                     UserName = request.Username,
                     PasswordHash=_passwordHasher.Hash(request.Password),
                     Name=request.Name,
+                    UserRole=request.UserRole,
                 };
                 await _repo.Add(newUser);
                 var result= new RegisterResult

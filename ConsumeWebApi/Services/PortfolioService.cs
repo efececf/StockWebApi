@@ -15,11 +15,18 @@ namespace StockWebApi.Services
         }
         public async Task createPortfolio(string name)
         {
-            Portfolio portfolio = new Portfolio
+            try{
+                Portfolio portfolio = new Portfolio
             {
                 Name = name
             };
             await _repo.Add(portfolio);
+            }
+            catch(Exception ex){
+                Console.WriteLine(ex.Message);
+                throw;
+            }
+            
         }
         public async Task deletePortfolio(Guid id)
         {

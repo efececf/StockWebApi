@@ -15,16 +15,18 @@ namespace StockWebApi.Controllers
     {
         private readonly ILogger<RegisterController> _logger;
         private IRegisterService _registerService;
+        private readonly IPortfolioService _portfolioService;
 
-        public RegisterController(ILogger<RegisterController> logger,IRegisterService service)
+        public RegisterController(ILogger<RegisterController> logger,IRegisterService service,IPortfolioService portfolioService)
         {
             _logger = logger;
             _registerService = service;
+            _portfolioService = portfolioService;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(RegisterRequest request)
         {
-            return View();
+            return View(request);
         }
 
         [HttpPost]
@@ -38,9 +40,11 @@ namespace StockWebApi.Controllers
                     Name = name,
                     Username=username,
                     Password=password,
+                    UserRole=userrole
                 };
                 var RegisterResu=await _registerService.Register(RegisterReq);
                 if(RegisterResu.IsRegistered==true){
+                    await _portfolioService.createPortfolio(username);
                     return RedirectToAction("Index","Home");
                 }
                 else{
