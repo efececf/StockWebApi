@@ -14,10 +14,14 @@ namespace StockWebApi.Services
         public PredictionService(HttpClient httpClient){
             _httpClient = httpClient;
         }
-        public async Task<Prediction> GetPrediction(string symbol){
+        public async Task<Prediction> GetPrediction(string symbol,int? year=null,int? steps=null){
             try
             {
-                string url = $"http://127.0.0.1:8000/predict/{symbol}";
+                string url;
+                if (year.HasValue && steps.HasValue && year.Value==0 && steps.Value==0)
+                    url = $"http://127.0.0.1:8000/predict/{symbol}";
+                else
+                    url = $"http://127.0.0.1:8000/predict/{symbol}/{year.Value}/{steps.Value}";
                 HttpResponseMessage response =await  _httpClient.GetAsync(url);
                 response.EnsureSuccessStatusCode();
                 HttpContent content = response.Content;

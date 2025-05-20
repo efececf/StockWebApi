@@ -4,6 +4,19 @@
 
 }
 @model StockWebApi.Models.Stock
+<!-- Başarı veya hata mesajlarını göster -->
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
 
 @if (Model == null)
 {
@@ -54,7 +67,7 @@ else
     <form method="post" asp-action="BuyThisStock" asp-controller="Stock">
         <div class="form-group">
             <label for="quantity">Quantity</label>
-            <input type="number" name="quantity" class="form-control" placeholder="Quantity" required />
+            <input type="number" name="quantity" id="quantity" class="form-control" placeholder="Quantity" required />
         </div>
         <button type="submit" class="btn btn-primary mt-2">Buy this Stock</button>
     </form>

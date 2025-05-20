@@ -22,9 +22,13 @@ namespace StockWebApi.Controllers
             _logger = logger;
             _loginService = loginService;
         }
-
+        [HttpGet]
         public IActionResult Index()
         {
+            var token=Request.Cookies["token"];
+            if (token != null){
+                return RedirectToAction("Index","Home");
+            }
             ViewData["Title"]="Giriş Yap";
             return View(new LoginRequest());
         }
@@ -60,7 +64,7 @@ namespace StockWebApi.Controllers
       [HttpPost("logout")]
       public IActionResult Logout(){
         Response.Cookies.Delete("token");//frontendde cookilerin içinde saklanan token isimli şeyi siler
-        return RedirectToAction("Index","Home");
+        return Ok();
       }
     }
 }

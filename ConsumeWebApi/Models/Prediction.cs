@@ -7,7 +7,8 @@ namespace StockWebApi.Models
 {
     public class Prediction
     {
-    public string? stockSymbol { get; set; }
-    public List<double>? predictedPrice { get; set; }
+        public string? stationary{ get; set; }
+        public string? stockSymbol { get; set; }
+        public List<double>? predictedPrice { get; set; }
     }
 }

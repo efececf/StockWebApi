@@ -12,12 +12,133 @@ else
 {
     <h3>Predicted Stock: @Model.stockSymbol</h3>
 
-    @if (Model.predictedPrice != null && Model.predictedPrice.Any())
-    {
-        <p>Predicted Price: @Model.predictedPrice[0]</p>
-    }
-    else
-    {
-        <p>No predicted prices found.</p>
-    }
+    <div>
+        <label>Year Range:</label>
+        <select id="yearSelect">
+            <option value="1">1 Year</option>
+            <option value="5">5 Years</option>
+            <option value="10" selected>5 Years</option>
+            <option value="10">10 Years</option>
+            <option value="20">20 Years</option>
+        </select>
+
+        <label>Step Count:</label>
+        <select id="stepSelect">
+            <option value="1">1 Day</option>
+            <option value="7">1 Week</option>
+            <option value="30" selected>1 month</option>
+            <option value="365">1 Year</option>
+        </select>
+
+        <button id="updateChart">Update Prediction</button>
+    </div>
+
+    <p>
+        @if (Model.stationary == "stationary")
+        {
+            <text>Data is stationary. We applied ARIMA directly.</text>
+        }
+        else if (Model.stationary == "trend")
+        {
+            <text>We made the data stationary and applied ARIMA.</text>
+        }
+        else if (Model.stationary == "seasonality")
+        {
+            <text>We applied SARIMA due to seasonality.</text>
+        }
+    </p>
+
+    <hr />
+
+    <canvas id="predictionChart" width="800" height="400"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        let chart;
+
+        function buildChart(prices) {
+            const labels = [];
+            const today = new Date();
+
+            for (let i = 0; i < prices.length; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() + i + 1);
+                labels.push(date.toISOString().split('T')[0]);
+            }
+
+            const ctx = document.getElementById('predictionChart').getContext('2d');
+            if (chart) chart.destroy(); // eski grafik varsa sil
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Predicted Price',
+                        data: prices,
+                        borderColor: 'blue',
+                        backgroundColor: 'rgba(0, 0, 255, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Stock Price Forecast'
+                        },
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Price'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            const initialPrices = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.predictedPrice));
+            buildChart(initialPrices);
+            const searchSymbol = '@Model.stockSymbol'; 
+            $('#updateChart').on('click', function () {
+                const year = $('#yearSelect').val();
+                const step = $('#stepSelect').val();
+
+                $.ajax({
+                    url: `/Stock/Prediction?symbol=${searchSymbol}&step=${step}&year=${year}`,
+                    method: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    success: function (data) {
+                        if (data.predictedPrice) {
+                            buildChart(data.predictedPrice);
+                        } else {
+                            alert("No prediction data received.");
+                        }
+                    },
+                    error: function () {
+                        alert("Error fetching prediction data.");
+                    }
+                });
+            });
+        });
+    </script>
 }

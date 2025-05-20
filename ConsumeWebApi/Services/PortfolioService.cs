@@ -13,21 +13,21 @@ namespace StockWebApi.Services
             _stockService = stockService;
             _repo=repo;
         }
-        public async Task createPortfolio(string name)
-        {
-            try{
-                Portfolio portfolio = new Portfolio
-            {
-                Name = name
-            };
-            await _repo.Add(portfolio);
-            }
-            catch(Exception ex){
-                Console.WriteLine(ex.Message);
-                throw;
-            }
+        // public async Task createPortfolio(string name)
+        // {
+        //     try{
+        //         Portfolio portfolio = new Portfolio
+        //     {
+        //         Name = name
+        //     };
+        //     await _repo.Add(portfolio);
+        //     }
+        //     catch(Exception ex){
+        //         Console.WriteLine(ex.Message);
+        //         throw;
+        //     }
             
-        }
+        // }
         public async Task deletePortfolio(Guid id)
         {
             await _repo.DeleteById(id);

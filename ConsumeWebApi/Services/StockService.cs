@@ -49,5 +49,36 @@ namespace StockWebApi.Services
             
 
         }
+        public async Task<List<StockList?>> GetStockList(){
+            try
+            {
+                string url = $"https://finnhub.io/api/v1/stock/symbol?exchange=US&token=cvudj6pr01qjg1394o7gcvudj6pr01qjg1394o80"
+;
+                HttpResponseMessage response =await  _httpClient.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+                HttpContent content = response.Content;
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"API Error: {response.StatusCode}");
+                    return null; // veya uygun bir nesne dönebilirsiniz
+                }
+
+
+
+                
+                
+                
+                string jsonData =await content.ReadAsStringAsync();
+                Console.WriteLine($"JSON Response: {jsonData}");
+
+                var stockList = JsonConvert.DeserializeObject<List<StockList>>(jsonData);
+                return stockList;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"Error fetching data: {ex.Message}");
+                return null;
+            }
+        }
     }
 }

@@ -24,7 +24,9 @@ namespace StockWebApi.Services
             if(portfolioStocks!=null){
                 var stock = portfolioStocks.FirstOrDefault(x=>x.StockName==stockName);//burda firstordefaultasync kullanamadık çünkü bellekte sorgu yapıyo veritabanına gitmiyor 
                 if(stock!=null){
+                    var stockPT=await _stockService.GetStock(stockName);
                     stock.Quantity+=quantity;
+                    stock.StockBuyingPrice=(stock.StockBuyingPrice*stock.Quantity+stockPT.c*quantity)/(stock.Quantity+quantity);
                     await _repo.Update(stock);
                     var stockInPortfolio=portfolio.Stocks.FirstOrDefault(x=>x.StockName==stock.StockName);
                     stockInPortfolio.Quantity+=quantity;
@@ -33,7 +35,10 @@ namespace StockWebApi.Services
                     await _portfolioRepository.Update(portfolio);
                 }
             }
+            var stockP=await _stockService.GetStock(stockName);
             StockPortfolio mystock= new StockPortfolio{
+                StockBuyingPrice=stockP.c,
+                PortfolioId=portfolio.Id,
                 StockName = stockName,
                 Quantity = quantity,
             };

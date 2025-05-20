@@ -24,8 +24,13 @@ namespace StockWebApi.Controllers
             _portfolioService = portfolioService;
         }
 
+        [HttpGet]
         public IActionResult Index(RegisterRequest request)
         {
+            var token=Request.Cookies["token"];
+            if (token != null){
+                return RedirectToAction("Index","Home");
+            }
             return View(request);
         }
 
@@ -44,12 +49,12 @@ namespace StockWebApi.Controllers
                 };
                 var RegisterResu=await _registerService.Register(RegisterReq);
                 if(RegisterResu.IsRegistered==true){
-                    await _portfolioService.createPortfolio(username);
+                    //await _portfolioService.createPortfolio(username);
                     return RedirectToAction("Index","Home");
                 }
                 else{
                     ModelState.AddModelError("","Bu kullanıcı adı başkası tarafından kullanılıyor!");
-                    return View();
+                    return View("Index");
                 }
             }
         }

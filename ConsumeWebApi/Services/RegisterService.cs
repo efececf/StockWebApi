@@ -12,9 +12,11 @@ namespace StockWebApi.Services
     public class RegisterService: IRegisterService
     {
         private readonly IUserRepository _repo;
+        private readonly IPortfolioRepository _portRepo;
         private IPasswordHasher _passwordHasher;
-        public RegisterService(IUserRepository repo,IPasswordHasher passwordHasher){
+        public RegisterService(IUserRepository repo,IPortfolioRepository portRepo,IPasswordHasher passwordHasher){
             _repo=repo;
+            _portRepo=portRepo;
             _passwordHasher=passwordHasher;
         }
         public async Task<RegisterResult> Register(RegisterRequest request){
@@ -35,6 +37,13 @@ namespace StockWebApi.Services
                     UserRole=request.UserRole,
                 };
                 await _repo.Add(newUser);
+                var newPort=new Portfolio{
+                    Name="Portfolio",
+                    Profit=0,
+                    UserId=newUser.Id,
+                    Stocks = new List<StockPortfolio>()
+                };
+                await _portRepo.Add(newPort);
                 var result= new RegisterResult
                 {
                     IsRegistered=true,

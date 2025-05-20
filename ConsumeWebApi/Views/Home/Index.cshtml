@@ -1,4 +1,4 @@
-﻿@model List<StockWebApi.Models.News>
+﻿@model StockWebApi.Models.HomeViewModel
 
 @{
     ViewData["Title"] = "Welcome to your personal investor";
@@ -32,10 +32,9 @@
             <hr />
 
             <!-- Haber listesi -->
-            @foreach (var news in Model)
+            @foreach (var news in Model.News)
             {
                 <div style="border: 1px solid #ccc; margin: 15px 0; padding: 10px; border-radius: 8px; display: flex; flex-direction: row;">
-                    <!-- Eğer resim varsa, resim ekleyelim -->
                     @if (!string.IsNullOrEmpty(news.Image))
                     {
                         <div style="flex: 1; max-width: 150px; margin-right: 15px;">
@@ -53,10 +52,10 @@
             }
         </div>
 
-        <!-- Sağ Kısım: TradingView Widget -->
+        <!-- Sağ Kısım: TradingView + Stock List -->
         <div class="col-md-4">
             <!-- TradingView Widget BEGIN -->
-            <div class="tradingview-widget-container">
+            <div class="tradingview-widget-container mb-4">
                 <div class="tradingview-widget-container__widget"></div>
                 <div class="tradingview-widget-copyright">
                     <a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank">
@@ -73,7 +72,7 @@
                     "isTransparent": false,
                     "showSymbolLogo": true,
                     "showFloatingTooltip": false,
-                    "width": "400",
+                    "width": "100%",
                     "height": "550",
                     "plotLineColorGrowing": "rgba(41, 98, 255, 1)",
                     "plotLineColorFalling": "rgba(41, 98, 255, 1)",
@@ -99,6 +98,30 @@
                 </script>
             </div>
             <!-- TradingView Widget END -->
-        </div>
+
+<div class="mt-4">
+    <h4>US Listed Stocks</h4>
+    <div style="max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; border-radius: 8px; background-color: #f8f9fa;">
+        <ul class="list-group">
+            @for (int i = 0; i < Model.Stocks.Count; i++)
+            {
+                var stock = Model.Stocks[i];
+                //var change = Model.StockChanges[i];
+                //var changeClass = change >= 0 ? "text-success" : "text-danger";
+                //var changeSymbol = change >= 0 ? "+" : ""; // eksi zaten geliyor
+
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <a asp-action="Index" asp-controller="Stock" asp-route-searchString="@stock.symbol" class="text-decoration-none">
+                            <strong>@stock.symbol</strong> - @stock.description
+                        </a>
+                        @* <div class="@changeClass" style="font-size: 0.9em;">
+                            @($"{changeSymbol}{change:F2}%")
+                        </div> *@
+                    </div>
+                    <span class="badge bg-secondary">@stock.currency</span>
+                </li>
+            }
+        </ul>
     </div>
 </div>
